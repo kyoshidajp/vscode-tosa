@@ -2,7 +2,7 @@ import { window, workspace, commands, StatusBarAlignment, Uri } from 'vscode';
 import child_process = require('child_process');
 import path = require('path');
 
-import { GIT_PATH, CONFIG_NAME } from './constants';
+import { GIT_PATH, CONFIG_NAME, SHA_NOT_COMMIT } from './constants';
 
 export class GitClient {
 
@@ -21,6 +21,11 @@ export class GitClient {
         }
 
         const doc = editor.document;
+        if (doc.isDirty) {
+            this.showInfo("You must save document before opening Pull Request.");
+            return;
+        }
+
         const fileName = path.basename(doc.fileName);
         const currentLine = editor.selection.active.line + 1;
         const blameCommand = GIT_PATH;
@@ -56,6 +61,11 @@ export class GitClient {
         });
     }
 
+    private showInfo(message: string) {
+        window.showInformationMessage(message);
+        console.info(message);
+    }
+
     private showError(message: string) {
         window.showErrorMessage(message);
         console.info(message);
@@ -65,6 +75,11 @@ export class GitClient {
         let sha = out.split(" ")[0];
         if (sha === "") {
             console.error(`Invalid sha. Sha: ${sha}`);
+            return;
+        }
+
+        if (sha === SHA_NOT_COMMIT) {
+            this.showError("This line is not committed yet.");
             return;
         }
 
