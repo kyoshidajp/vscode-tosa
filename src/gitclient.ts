@@ -79,7 +79,7 @@ export class GitClient {
         }
 
         if (sha === SHA_NOT_COMMIT) {
-            this.showError("This line is not commited yet.");
+            this.showError("This line is not committed yet.");
             return;
         }
 
