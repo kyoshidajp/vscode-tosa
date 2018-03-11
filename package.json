@@ -1,0 +1,81 @@
+{
+    "name": "vscode-tosa",
+    "displayName": "VS code tosa",
+    "description": "Open pull request page from line you selected.",
+    "version": "0.0.1",
+    "publisher": "Katsuhiko YOSHIDA",
+    "author": {
+        "name": "Katsuhiko YOSHIDA"
+    },
+    "engines": {
+        "vscode": "^1.21.0"
+    },
+    "license": "MIT License",
+    "categories": [
+        "Languages",
+        "Other"
+    ],
+    "keywords": [
+        "github",
+        "git"
+    ],
+    "homepage": "https://github.com/kyoshidajp/vscode-tosa",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kyoshidajp/vscode-tosa"
+    },
+    "bugs": {
+        "url": "https://github.com/kyoshidajp/vscode-tosa/issues"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "vscodetosa.openPR",
+                "title": "Open Pull Request"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "vscodetosa.openPR",
+                    "group": "vscodetosa"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "VSCode TOSA configuration",
+            "properties": {
+                "vscodetosa.token": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": null,
+                    "description": "A Token to access GitHub API v3."
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "tslint": "^5.8.0",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "@octokit/rest": "^15.1.9"
+    }
+}
