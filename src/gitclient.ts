@@ -21,6 +21,11 @@ export class GitClient {
         }
 
         const doc = editor.document;
+        if (doc.isDirty) {
+            this.showInfo("You must save document before opening Pull Request.");
+            return;
+        }
+
         const fileName = path.basename(doc.fileName);
         const currentLine = editor.selection.active.line + 1;
         const blameCommand = GIT_PATH;
@@ -54,6 +59,11 @@ export class GitClient {
             type: 'integration',
             token: token
         });
+    }
+
+    private showInfo(message: string) {
+        window.showInformationMessage(message);
+        console.info(message);
     }
 
     private showError(message: string) {
