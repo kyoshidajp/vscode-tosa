@@ -46,7 +46,7 @@ export class GitClient {
         const config = workspace.getConfiguration(CONFIG_NAME);
         const token = config['token'];
         if (!token) {
-            this.showError(`Could not found ${CONFIG_NAME}.token in settings.`);
+            this.showError(`Could not find ${CONFIG_NAME}.token in settings.`);
             return;
         }
 
