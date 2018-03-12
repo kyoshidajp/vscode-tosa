@@ -8,6 +8,8 @@ export class GitClient {
 
     private _statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
     private octokit = require('@octokit/rest')();
+    private spinner = require('elegant-spinner')();
+    private _interval: any;
 
     constructor() {
         this.initializeOctokit();
@@ -85,6 +87,8 @@ export class GitClient {
 
         const q = `${sha} type:pr is:merged`;
         this.octokit.search.issues({q, sort: "created", order: "desc"}, (error: any, result: any) => {
+            this.clearSendProgressStatusText();
+
             if (error) {
                 this.showSerachPRError(error);
                 return;
@@ -100,6 +104,21 @@ export class GitClient {
             let url = pr.pull_request.html_url;
             commands.executeCommand('vscode.open', Uri.parse(url));
         });
+        this.setSendingProgressStatusText();
+    }
+
+    private setSendingProgressStatusText() {
+        this.clearSendProgressStatusText();
+        this._interval = setInterval(() => {
+            this._statusBarItem.text = `Searching ${this.spinner()}`;
+        }, 50);
+        this._statusBarItem.tooltip = 'Waiting Response';
+        this._statusBarItem.show();
+    }
+
+    private clearSendProgressStatusText() {
+        clearInterval(this._interval);
+        this._statusBarItem.text = "";
     }
 
     private showSerachPRError(error: any) {

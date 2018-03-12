@@ -76,6 +76,7 @@
         "@types/mocha": "^2.2.42"
     },
     "dependencies": {
-        "@octokit/rest": "^15.1.9"
+        "@octokit/rest": "^15.1.9",
+        "elegant-spinner": "^1.0.1"
     }
 }
