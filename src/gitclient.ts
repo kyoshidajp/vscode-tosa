@@ -84,7 +84,7 @@ export class GitClient {
         }
 
         const q = `${sha} type:pr is:merged`;
-        this.octokit.search.issues({q}, (error: any, result: any) => {
+        this.octokit.search.issues({q, sort: "created", order: "desc"}, (error: any, result: any) => {
             if (error) {
                 this.showSerachPRError(error);
                 return;
