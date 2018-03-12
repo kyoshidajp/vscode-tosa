@@ -1,7 +1,16 @@
 # Change Log
-All notable changes to the "vscode-tosa" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## v0.0.2
 
-## [Unreleased]
-- Initial release
+### Added
+- Show error message when stderror is blank
+- Show progress when searching Pull Request
+- Check whether the document is saved or not
+- Support case when selecting not commited line
+- Add search terms to identify a PR
+
+### Fixed
+- Fix opening the merged Pull Request problem
+
+## 0.0.1
+- Release
