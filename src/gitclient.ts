@@ -38,7 +38,7 @@ export class GitClient {
         };
         child_process.execFile(blameCommand, args, gitExecOptions, (error, stdout, stderror) => {
             if (error !== null) {
-                window.showErrorMessage(stderror.toString());
+                this.showError(stderror.toString() || error.message);
                 return;
             }
 
@@ -76,7 +76,7 @@ export class GitClient {
     private async openPage(out: string) {
         let sha = out.split(" ")[0];
         if (sha === "") {
-            console.error(`Invalid sha. Sha: ${sha}`);
+            this.showError(`Invalid sha. Sha: ${sha}`);
             return;
         }
 
