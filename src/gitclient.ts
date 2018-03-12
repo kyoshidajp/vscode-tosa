@@ -6,8 +6,10 @@ import { GIT_PATH, CONFIG_NAME, SHA_NOT_COMMIT } from './constants';
 
 export class GitClient {
 
-    private _statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    private statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
     private octokit = require('@octokit/rest')();
+    private spinner = require('elegant-spinner')();
+    private interval: any;
 
     constructor() {
         this.initializeOctokit();
@@ -16,7 +18,7 @@ export class GitClient {
     public openPR() {
         let editor = window.activeTextEditor;
         if (!editor) {
-            this._statusBarItem.hide();
+            this.statusBarItem.hide();
             return;
         }
 
@@ -36,7 +38,7 @@ export class GitClient {
         };
         child_process.execFile(blameCommand, args, gitExecOptions, (error, stdout, stderror) => {
             if (error !== null) {
-                window.showErrorMessage(stderror.toString());
+                this.showError(stderror.toString() || error.message);
                 return;
             }
 
@@ -74,7 +76,7 @@ export class GitClient {
     private async openPage(out: string) {
         let sha = out.split(" ")[0];
         if (sha === "") {
-            console.error(`Invalid sha. Sha: ${sha}`);
+            this.showError(`Invalid sha. Sha: ${sha}`);
             return;
         }
 
@@ -85,6 +87,8 @@ export class GitClient {
 
         const q = `${sha} type:pr is:merged`;
         this.octokit.search.issues({q, sort: "created", order: "desc"}, (error: any, result: any) => {
+            this.clearSendProgressStatusText();
+
             if (error) {
                 this.showSerachPRError(error);
                 return;
@@ -100,6 +104,21 @@ export class GitClient {
             let url = pr.pull_request.html_url;
             commands.executeCommand('vscode.open', Uri.parse(url));
         });
+        this.setSendingProgressStatusText();
+    }
+
+    private setSendingProgressStatusText() {
+        this.clearSendProgressStatusText();
+        this.interval = setInterval(() => {
+            this.statusBarItem.text = `Searching ${this.spinner()}`;
+        }, 50);
+        this.statusBarItem.tooltip = 'Waiting Response';
+        this.statusBarItem.show();
+    }
+
+    private clearSendProgressStatusText() {
+        clearInterval(this.interval);
+        this.statusBarItem.text = "";
     }
 
     private showSerachPRError(error: any) {
