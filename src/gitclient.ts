@@ -6,10 +6,10 @@ import { GIT_PATH, CONFIG_NAME, SHA_NOT_COMMIT } from './constants';
 
 export class GitClient {
 
-    private _statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    private statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
     private octokit = require('@octokit/rest')();
     private spinner = require('elegant-spinner')();
-    private _interval: any;
+    private interval: any;
 
     constructor() {
         this.initializeOctokit();
@@ -18,7 +18,7 @@ export class GitClient {
     public openPR() {
         let editor = window.activeTextEditor;
         if (!editor) {
-            this._statusBarItem.hide();
+            this.statusBarItem.hide();
             return;
         }
 
@@ -109,16 +109,16 @@ export class GitClient {
 
     private setSendingProgressStatusText() {
         this.clearSendProgressStatusText();
-        this._interval = setInterval(() => {
-            this._statusBarItem.text = `Searching ${this.spinner()}`;
+        this.interval = setInterval(() => {
+            this.statusBarItem.text = `Searching ${this.spinner()}`;
         }, 50);
-        this._statusBarItem.tooltip = 'Waiting Response';
-        this._statusBarItem.show();
+        this.statusBarItem.tooltip = 'Waiting Response';
+        this.statusBarItem.show();
     }
 
     private clearSendProgressStatusText() {
-        clearInterval(this._interval);
-        this._statusBarItem.text = "";
+        clearInterval(this.interval);
+        this.statusBarItem.text = "";
     }
 
     private showSerachPRError(error: any) {
