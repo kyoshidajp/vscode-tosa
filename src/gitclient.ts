@@ -24,7 +24,7 @@ export class GitClient {
 
         const doc = editor.document;
         if (doc.isDirty) {
-            this.showInfo("You must save document before opening Pull Request.");
+            this.showError("You must save document before opening Pull Request.");
             return;
         }
 
@@ -63,14 +63,9 @@ export class GitClient {
         });
     }
 
-    private showInfo(message: string) {
-        window.showInformationMessage(message);
-        console.info(message);
-    }
-
     private showError(message: string) {
         window.showErrorMessage(message);
-        console.info(message);
+        console.error(message);
     }
 
     private async openPage(out: string) {
