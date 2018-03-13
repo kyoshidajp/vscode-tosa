@@ -105,7 +105,7 @@ export class GitClient {
     private setSendingProgressStatusText() {
         this.clearSendProgressStatusText();
         this.interval = setInterval(() => {
-            this.statusBarItem.text = `Searching ${this.spinner()}`;
+            this.statusBarItem.text = `$(clock) Searching ${this.spinner()}`;
         }, 50);
         this.statusBarItem.tooltip = 'Waiting Response';
         this.statusBarItem.show();
