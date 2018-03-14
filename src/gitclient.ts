@@ -10,12 +10,15 @@ export class GitClient {
     private octokit = require('@octokit/rest')();
     private spinner = require('elegant-spinner')();
     private interval: any;
+    private currentDirectory = "";
+    private fileName = "";
+    private currentLine = -1;
 
     constructor() {
         this.initializeOctokit();
     }
 
-    public openPR() {
+    public async openPR() {
         let editor = window.activeTextEditor;
         if (!editor) {
             this.statusBarItem.hide();
@@ -28,21 +31,74 @@ export class GitClient {
             return;
         }
 
-        const fileName = path.basename(doc.fileName);
-        const currentLine = editor.selection.active.line + 1;
-        const blameCommand = GIT_PATH;
-        const args = `blame -L ${currentLine},${currentLine} ${fileName}`.split(" ");
-        const currentDirectory = path.dirname(doc.fileName);
-        const gitExecOptions = {
-            cwd: currentDirectory
-        };
-        child_process.execFile(blameCommand, args, gitExecOptions, (error, stdout, stderror) => {
-            if (error !== null) {
-                this.showError(stderror.toString() || error.message);
-                return;
-            }
+        this.fileName = path.basename(doc.fileName);
+        this.currentLine = editor.selection.active.line + 1;
+        this.currentDirectory = path.dirname(doc.fileName);
+        const repositoryName = await this.getRepositoryName();
+        const hash = await this.getCommitHash();
+        this.openPage(hash.toString(), repositoryName.toString());
+    }
 
-            this.openPage(stdout);
+    private async getRepositoryName() {
+        const args = "config --get remote.origin.url".split(" ");
+        const gitExecOptions = {
+            cwd: this.currentDirectory
+        };
+        
+        return new Promise(resolve => {
+            child_process.execFile(GIT_PATH, args, gitExecOptions, (error, stdout, stderror) => {
+                if (error !== null) {
+                    this.showError(stderror.toString() || error.message);
+                    return;
+                }
+
+                resolve(this._getFullRepositoryName(stdout));
+            });
+        });
+    }
+
+    private _getFullRepositoryName(result: string): string {
+        const gitProtocolRepo = result.match(/^git@github\.com:(.+)\.git/);
+        if (gitProtocolRepo) {
+            return gitProtocolRepo[1];
+        }
+        
+        const httpsProtocolRepo = result.match(/^https:\/\/github\.com\/(.+)\.git/);
+        if (httpsProtocolRepo) {
+            return httpsProtocolRepo[1];
+        }
+
+        const message = "Could not get repository name.";
+        this.showError(message);
+        throw new Error(message);
+    }
+
+    private async getCommitHash() {
+        const args = `blame -L ${this.currentLine},${this.currentLine} ${this.fileName}`.split(" ");
+        const gitExecOptions = {
+            cwd: this.currentDirectory
+        };
+
+        return new Promise(resolve => {
+            child_process.execFile(GIT_PATH, args, gitExecOptions, (error, stdout, stderror) => {
+                if (error !== null) {
+                    this.showError(stderror.toString() || error.message);
+                    return;
+                }
+
+                let sha = stdout.split(" ")[0];
+                if (sha === "") {
+                    this.showError(`Invalid sha. Sha: ${sha}`);
+                    return;
+                }
+
+                if (sha === SHA_NOT_COMMIT) {
+                    this.showError("This line is not committed yet.");
+                    return;
+                }
+
+                resolve(sha);
+            });
         });
     }
 
@@ -68,19 +124,8 @@ export class GitClient {
         console.error(message);
     }
 
-    private async openPage(out: string) {
-        let sha = out.split(" ")[0];
-        if (sha === "") {
-            this.showError(`Invalid sha. Sha: ${sha}`);
-            return;
-        }
-
-        if (sha === SHA_NOT_COMMIT) {
-            this.showError("This line is not committed yet.");
-            return;
-        }
-
-        const q = `${sha} type:pr is:merged`;
+    private async openPage(sha: string, repo: string) {
+        const q = `${sha} type:pr is:merged repo:${repo}`;
         this.octokit.search.issues({q, sort: "created", order: "desc"}, (error: any, result: any) => {
             this.clearSendProgressStatusText();
 
