@@ -1,15 +1,15 @@
 import { commands, ExtensionContext } from 'vscode';
-import { GitClient } from './gitclient';
+import { Tosa } from './tosa';
 
 export function activate(ctx: ExtensionContext) {
 
     console.log('"vscode-tosa" is now active!');
 
-    let client = new GitClient();
-    const blameCommand = commands.registerCommand(
+    const app = new Tosa();
+    const openCommand = commands.registerCommand(
         'vscodetosa.openPR',
-        client.openPR,
-        client
+        app.openPR,
+        app
     );
-    ctx.subscriptions.push(client, blameCommand);
+    ctx.subscriptions.push(app, openCommand);
 }
