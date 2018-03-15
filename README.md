@@ -1,5 +1,8 @@
 # VS Code TOSA
 
+[![Travis](https://travis-ci.org/kyoshidajp/vscode-tosa.svg?branch=master)](https://travis-ci.org/kyoshidajp/vscode-tosa)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
+
 A [Visual Studio Code](https://code.visualstudio.com/) [extension](https://marketplace.visualstudio.com/VSCode) which open pull request page from line you selected. You can more easily find why the code is included by the page.
 
 <img src="https://user-images.githubusercontent.com/3317191/37252237-0752e564-2561-11e8-8028-662393dbb05c.png" width="600px" />
