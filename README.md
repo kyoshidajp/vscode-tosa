@@ -1,7 +1,6 @@
 # VS Code TOSA
-
+[![](https://vsmarketplacebadge.apphb.com/version-short/kyoshidajp.vscode-tosa.svg)](https://marketplace.visualstudio.com/items?itemName=kyoshidajp.vscode-tosa)
 [![Travis](https://travis-ci.org/kyoshidajp/vscode-tosa.svg?branch=master)](https://travis-ci.org/kyoshidajp/vscode-tosa)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
 
 A [Visual Studio Code](https://code.visualstudio.com/) [extension](https://marketplace.visualstudio.com/VSCode) which open pull request page from line you selected. You can more easily find why the code is included by the page.
 
