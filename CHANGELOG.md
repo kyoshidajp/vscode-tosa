@@ -1,6 +1,19 @@
 # Change Log
 
-## v0.0.2
+## 0.0.3
+
+### Added
+- Add test
+- Add repository name to search terms
+- Add clock icon
+
+### Chaned
+- Change item logo
+- Refactor: Separate class
+- Change readme content
+- Change error level
+
+## 0.0.2
 
 ### Added
 - Show error message when stderror is blank
