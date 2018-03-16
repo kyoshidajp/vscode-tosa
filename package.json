@@ -77,6 +77,8 @@
     },
     "dependencies": {
         "@octokit/rest": "^15.1.9",
-        "elegant-spinner": "^1.0.1"
+        "@types/nock": "^9.1.2",
+        "elegant-spinner": "^1.0.1",
+        "nock": "^9.2.3"
     }
 }

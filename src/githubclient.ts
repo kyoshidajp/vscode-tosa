@@ -26,7 +26,7 @@ export class GithubClient {
     public async getPullRequestUrl(sha: string, repo: string) {
         const q = `${sha} type:pr is:merged repo:${repo}`;
         return new Promise((resolve, reject) => {
-            this.octokit.search.issues({ q, sort: "created", order: "desc" }, (error: any, result: any) => {
+            this.octokit.search.issues({ q, repo, sort: "created", order: "desc" }, (error: any, result: any) => {
                 if (error) {
                     reject("Unknown error was occured while searching the Pull Request.");
                     return;
