@@ -10,9 +10,12 @@ If you want to run not only on VS Code also CLI? You can get CLI version from [h
 
 ## Extension Settings
 
-This extension needs to specify the following settings:
+You can specify the following settings:
 
-* `vscodetosa.token`: GitHub API TOKEN
+| name | type | description | default |
+| :--- | :--- | :---------- | :------ |
+| `vscodetosa.token` | string | A Token to access GitHub API v3.<br>If not set, you can't access private repository. | `""` |
+| `vscodetosa.openSystemBrowser` | boolean | Open pull request page on a System Web Browser.<br>If set `false`, then open inline HTML view. | `true` |
 
 <img width="500" alt="vscodetosa_settings" src="https://user-images.githubusercontent.com/3317191/37252324-b567b00c-2562-11e8-89af-74ad23ff6864.png">
 

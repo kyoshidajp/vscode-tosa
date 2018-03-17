@@ -1,8 +1,10 @@
-import { window, commands, StatusBarAlignment, Uri } from 'vscode';
+import { window, workspace, commands, StatusBarAlignment, Uri, ViewColumn } from 'vscode';
 import path = require('path');
 
 import { GitClient } from './gitclient';
 import { GithubClient } from './githubclient';
+import { HTMLContentProvider } from './htmlcontentprovider';
+import { CONFIG_NAME } from './constants';
 
 export class Tosa {
 
@@ -10,17 +12,27 @@ export class Tosa {
     private spinner = require('elegant-spinner')();
     private interval: any;
 
-    public async openPR() {
+    public async exec() {
+        this.setSendingProgressStatusText();
+        const url = <string> await this.getPullRequestUrl();
+        this.openPullRequest(url);
+        this.clearSendProgressStatusText();
+    }
+
+    public dispose() {
+    }
+
+    private async getPullRequestUrl(): Promise<string> {
         const editor = window.activeTextEditor;
         if (!editor) {
             this.statusBarItem.hide();
-            return;
+            throw new Error();
         }
 
         const doc = editor.document;
         if (doc.isDirty) {
             this.showError("You must save document before opening Pull Request.");
-            return;
+            throw new Error();
         }
 
         const fileName = path.basename(doc.fileName);
@@ -37,18 +49,22 @@ export class Tosa {
             throw new Error();
         });
 
-        this.setSendingProgressStatusText();
         const githubclient = new GithubClient();
-        const url = await githubclient.getPullRequestUrl(hash.toString(),repositoryName.toString()).catch(error => {
+        return <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
             this.showError(error);
             throw new Error();
         });
-        this.clearSendProgressStatusText();
-
-        commands.executeCommand('vscode.open', Uri.parse(url.toString()));
     }
 
-    public dispose() {
+    private openPullRequest(url: string) {
+        const htmlUrl = Uri.parse(url);
+        const isOpenBrowser = <boolean>workspace.getConfiguration(CONFIG_NAME).get('openSystemBrowser');
+        if (isOpenBrowser) {
+            commands.executeCommand('vscode.open', htmlUrl);
+        } else {
+            workspace.registerTextDocumentContentProvider('https', new HTMLContentProvider());
+            commands.executeCommand('vscode.previewHtml', htmlUrl, ViewColumn.Two, 'Github');
+        }
     }
 
     private showError(message: string) {
