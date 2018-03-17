@@ -26,7 +26,7 @@ export class GithubClient {
     public async getPullRequestUrl(sha: string, repo: string) {
         const q = `${sha} type:pr is:merged repo:${repo}`;
         return new Promise((resolve, reject) => {
-            this.octokit.search.issues({ q, sort: "created", order: "desc" }, (error: any, result: any) => {
+            this.octokit.search.issues({ q, repo, sort: "created", order: "desc" }, (error: any, result: any) => {
                 if (error) {
                     reject("Unknown error was occured while searching the Pull Request.");
                     return;
@@ -45,15 +45,19 @@ export class GithubClient {
         });
     }
 
-    private initializeOctokit():void {
-        this.octokit = require('@octokit/rest')();
-
+    private getToken(): string {
         const config = workspace.getConfiguration(CONFIG_NAME);
-        const token = config['token'];
+        const token = <string>config.get('token');
+        return token;
+    }
+
+    private initializeOctokit():void {
+        const token = this.getToken();
         if (!token) {
             throw new Error(`Could not find ${CONFIG_NAME}.token in settings.`);
         }
 
+        this.octokit = require('@octokit/rest')();
         this.octokit.authenticate({
             type: 'integration',
             token: token
