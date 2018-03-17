@@ -4,6 +4,7 @@ import { CONFIG_NAME } from './constants';
 
 export class GithubClient {
     private octokit: any;
+    private token: string = "";
 
     constructor() {
         this.initializeOctokit();
@@ -14,12 +15,12 @@ export class GithubClient {
         if (gitProtocolRepo) {
             return gitProtocolRepo[1];
         }
-        
+
         const httpsProtocolRepo = path.match(/^https:\/\/github\.com\/(.+)\.git/);
         if (httpsProtocolRepo) {
             return httpsProtocolRepo[1];
         }
-        
+
         throw new Error("Could not get repository name.");
     }
 
@@ -28,7 +29,11 @@ export class GithubClient {
         return new Promise((resolve, reject) => {
             this.octokit.search.issues({ q, repo, sort: "created", order: "desc" }, async (error: any, result: any) => {
                 if (error) {
-                    reject("Unknown error was occured while searching the Pull Request.");
+                    if (error.code === 422) {
+                        reject("You don't have permission to access. Check your configuration \"vscodetosa.token\" is set and valid or not.");
+                    } else {
+                        reject("Unknown error was occured while searching the Pull Request.");
+                    }
                     return;
                 }
 
@@ -67,20 +72,19 @@ export class GithubClient {
 
     private getToken(): string {
         const config = workspace.getConfiguration(CONFIG_NAME);
-        const token = <string>config.get('token');
-        return token;
+        this.token = <string>config.get('token');
+        return this.token;
     }
 
-    private initializeOctokit():void {
-        const token = this.getToken();
-        if (!token) {
-            throw new Error(`Could not find ${CONFIG_NAME}.token in settings.`);
-        }
-
+    private initializeOctokit(): void {
         this.octokit = require('@octokit/rest')();
-        this.octokit.authenticate({
-            type: 'integration',
-            token: token
-        });
+
+        this.getToken();
+        if (this.token) {
+            this.octokit.authenticate({
+                type: 'integration',
+                token: this.token
+            });
+        }
     }
 }
