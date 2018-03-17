@@ -8,7 +8,7 @@ export function activate(ctx: ExtensionContext) {
     const app = new Tosa();
     const openCommand = commands.registerCommand(
         'vscodetosa.openPR',
-        app.openPR,
+        app.exec,
         app
     );
     ctx.subscriptions.push(app, openCommand);

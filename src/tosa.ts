@@ -1,8 +1,10 @@
-import { window, commands, StatusBarAlignment, Uri } from 'vscode';
+import { window, workspace, commands, StatusBarAlignment, Uri, ViewColumn } from 'vscode';
 import path = require('path');
 
 import { GitClient } from './gitclient';
 import { GithubClient } from './githubclient';
+import { HTMLContentProvider } from './htmlcontentprovider';
+import { CONFIG_NAME } from './constants';
 
 export class Tosa {
 
@@ -10,7 +12,7 @@ export class Tosa {
     private spinner = require('elegant-spinner')();
     private interval: any;
 
-    public async openPR() {
+    public async exec() {
         const editor = window.activeTextEditor;
         if (!editor) {
             this.statusBarItem.hide();
@@ -39,16 +41,26 @@ export class Tosa {
 
         this.setSendingProgressStatusText();
         const githubclient = new GithubClient();
-        const url = await githubclient.getPullRequestUrl(hash.toString(),repositoryName.toString()).catch(error => {
+        const url = <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
             this.showError(error);
             throw new Error();
         });
+        this.openPR(url);
         this.clearSendProgressStatusText();
-
-        commands.executeCommand('vscode.open', Uri.parse(url.toString()));
     }
 
     public dispose() {
+    }
+
+    private openPR(url: string) {
+        const htmlUrl = Uri.parse(url);
+        const isOpenBrowser = <boolean>workspace.getConfiguration(CONFIG_NAME).get('openSystemBrowser');
+        if (isOpenBrowser) {
+            commands.executeCommand('vscode.open', htmlUrl);
+        } else {
+            workspace.registerTextDocumentContentProvider('https', new HTMLContentProvider());
+            commands.executeCommand('vscode.previewHtml', htmlUrl, ViewColumn.Two, 'Github');
+        }
     }
 
     private showError(message: string) {
