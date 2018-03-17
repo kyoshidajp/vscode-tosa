@@ -45,15 +45,19 @@ export class GithubClient {
         });
     }
 
-    private initializeOctokit():void {
-        this.octokit = require('@octokit/rest')();
-
+    private getToken(): string {
         const config = workspace.getConfiguration(CONFIG_NAME);
-        const token = config['token'];
+        const token = <string>config.get('token');
+        return token;
+    }
+
+    private initializeOctokit():void {
+        const token = this.getToken();
         if (!token) {
             throw new Error(`Could not find ${CONFIG_NAME}.token in settings.`);
         }
 
+        this.octokit = require('@octokit/rest')();
         this.octokit.authenticate({
             type: 'integration',
             token: token
