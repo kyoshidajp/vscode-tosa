@@ -15,7 +15,7 @@ export class Tosa {
     public async exec() {
         this.setSendingProgressStatusText();
         const url = <string> await this.getPullRequestUrl();
-        this.openPR(url);
+        this.openPullRequest(url);
         this.clearSendProgressStatusText();
     }
 
@@ -56,7 +56,7 @@ export class Tosa {
         });
     }
 
-    private openPR(url: string) {
+    private openPullRequest(url: string) {
         const htmlUrl = Uri.parse(url);
         const isOpenBrowser = <boolean>workspace.getConfiguration(CONFIG_NAME).get('openSystemBrowser');
         if (isOpenBrowser) {
