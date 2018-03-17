@@ -13,16 +13,26 @@ export class Tosa {
     private interval: any;
 
     public async exec() {
+        this.setSendingProgressStatusText();
+        const url = <string> await this.getPullRequestUrl();
+        this.openPR(url);
+        this.clearSendProgressStatusText();
+    }
+
+    public dispose() {
+    }
+
+    private async getPullRequestUrl(): Promise<string> {
         const editor = window.activeTextEditor;
         if (!editor) {
             this.statusBarItem.hide();
-            return;
+            throw new Error();
         }
 
         const doc = editor.document;
         if (doc.isDirty) {
             this.showError("You must save document before opening Pull Request.");
-            return;
+            throw new Error();
         }
 
         const fileName = path.basename(doc.fileName);
@@ -39,17 +49,11 @@ export class Tosa {
             throw new Error();
         });
 
-        this.setSendingProgressStatusText();
         const githubclient = new GithubClient();
-        const url = <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
+        return <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
             this.showError(error);
             throw new Error();
         });
-        this.openPR(url);
-        this.clearSendProgressStatusText();
-    }
-
-    public dispose() {
     }
 
     private openPR(url: string) {
