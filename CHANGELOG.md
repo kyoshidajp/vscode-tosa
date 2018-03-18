@@ -1,5 +1,20 @@
 # Change Log
 
+## 0.0.4
+
+### Added
+- Add "browser" option which opens the pull request 
+- Add "git" option which specify git command path
+- Add "openSystemBrowser" option which opens PR on a system browser or a inline HTMLViewer
+- Add .vscode directory
+- Add constructor and getPullRequestUrl test
+
+### Changed
+- Move getting token method for test
+
+### Fixed
+- Fix opposite parameters of asserts
+
 ## 0.0.3
 
 ### Added
@@ -7,7 +22,7 @@
 - Add repository name to search terms
 - Add clock icon
 
-### Chaned
+### Changed
 - Change item logo
 - Refactor: Separate class
 - Change readme content
