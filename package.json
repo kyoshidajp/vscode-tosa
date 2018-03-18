@@ -64,6 +64,13 @@
                     ],
                     "default": true,
                     "description": "Open pull request page on a System Web Browser."
+                },
+                "vscodetosa.git": {
+                    "type": [
+                        "string"
+                    ],
+                    "default": "",
+                    "description": "A path of git command."
                 }
             }
         }

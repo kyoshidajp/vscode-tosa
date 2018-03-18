@@ -1,6 +1,7 @@
+import { workspace } from 'vscode';
 import child_process = require('child_process');
 
-import { GIT_PATH, SHA_NOT_COMMIT } from './constants';
+import { GIT_COMMAND, SHA_NOT_COMMIT, CONFIG_NAME } from './constants';
 import { GithubClient } from './githubclient';
 
 export class GitClient {
@@ -22,7 +23,7 @@ export class GitClient {
         };
         
         return new Promise((resolve, reject) => {
-            child_process.execFile(GIT_PATH, args, gitExecOptions, (error, stdout, stderror) => {
+            child_process.execFile(this.gitCommand, args, gitExecOptions, (error, stdout, stderror) => {
                 if (error !== null) {
                     reject(stderror.toString() || error.message);
                     return;
@@ -44,7 +45,7 @@ export class GitClient {
         };
 
         return new Promise((resolve, reject) => {
-            child_process.execFile(GIT_PATH, args, gitExecOptions, (error, stdout, stderror) => {
+            child_process.execFile(this.gitCommand, args, gitExecOptions, (error, stdout, stderror) => {
                 if (error !== null) {
                     reject(stderror.toString() || error.message);
                     return;
@@ -64,5 +65,10 @@ export class GitClient {
                 resolve(sha);
             });
         });
+    }
+
+    private get gitCommand(): string {
+        const configPath = <string>workspace.getConfiguration(CONFIG_NAME).get('git');
+        return configPath === "" ? GIT_COMMAND : configPath;
     }
 }
