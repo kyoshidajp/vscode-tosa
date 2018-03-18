@@ -71,6 +71,13 @@
                     ],
                     "default": "",
                     "description": "A path of git command."
+                },
+                "vscodetosa.browser": {
+                    "type": [
+                        "string"
+                    ],
+                    "default": "",
+                    "description": "A command of browser which opens pull request when \"vscodetosa.openSystemBrowser\" is \"true\"."
                 }
             }
         }

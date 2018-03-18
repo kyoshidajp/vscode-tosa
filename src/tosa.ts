@@ -1,5 +1,6 @@
 import { window, workspace, commands, StatusBarAlignment, Uri, ViewColumn } from 'vscode';
 import path = require('path');
+import child_process = require('child_process');
 
 import { GitClient } from './gitclient';
 import { GithubClient } from './githubclient';
@@ -57,13 +58,25 @@ export class Tosa {
     }
 
     private openPullRequest(url: string) {
-        const htmlUrl = Uri.parse(url);
         const isOpenBrowser = <boolean>workspace.getConfiguration(CONFIG_NAME).get('openSystemBrowser');
+        const htmlUrl = Uri.parse(url);
         if (isOpenBrowser) {
-            commands.executeCommand('vscode.open', htmlUrl);
+            this.openBrowser(htmlUrl);
         } else {
             workspace.registerTextDocumentContentProvider('https', new HTMLContentProvider());
             commands.executeCommand('vscode.previewHtml', htmlUrl, ViewColumn.Two, 'Github');
+        }
+    }
+
+    private openBrowser(url: Uri) {
+        const configBrowser = <string>workspace.getConfiguration(CONFIG_NAME).get('browser');
+        if (configBrowser === "") {
+            commands.executeCommand('vscode.open', url);
+        } else {
+            const configBrowserList = configBrowser.split(" ");
+            const commandPath = <string>configBrowserList.shift();
+            configBrowserList.push(url.toString());
+            child_process.execFile(commandPath, configBrowserList);
         }
     }
 

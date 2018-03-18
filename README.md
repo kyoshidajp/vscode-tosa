@@ -17,6 +17,7 @@ You can specify the following settings:
 | `vscodetosa.token` | string | A Token to access GitHub API v3.<br>If not set, you can't access private repository. | `""` |
 | `vscodetosa.openSystemBrowser` | boolean | Open pull request page on a System Web Browser.<br>If set `false`, then open inline HTML view. | `true` |
 | `vscodetosa.git` | string | A path of git command.<br>If set `""`, then used `git` in `PATH`. | `""` |
+| `vscodetosa.browser` | string | A command of browser which opens pull request when `vscodetosa.openSystemBrowser` is `true`.<br>If set `""`, then use a System Web Browser.<br>**Example)** `open -a Safari` to open by Safari on macOS. | `""` |
 
 <img width="500" alt="vscodetosa_settings" src="https://user-images.githubusercontent.com/3317191/37252324-b567b00c-2562-11e8-89af-74ad23ff6864.png">
 
