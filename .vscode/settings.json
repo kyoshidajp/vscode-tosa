@@ -1,5 +1,7 @@
 // Place your settings in this file to overwrite default and user settings.
 {
 	"vscodetosa.token": "",
-	"vscodetosa.openSystemBrowser": true
+	"vscodetosa.openSystemBrowser": true,
+	"vscodetosa.git": "",
+	"vscodetosa.browser": ""
 }
