@@ -26,7 +26,7 @@ export class GithubClient {
     public async getPullRequestUrl(sha: string, repo: string) {
         const q = `${sha} type:pr is:merged repo:${repo}`;
         return new Promise((resolve, reject) => {
-            this.octokit.search.issues({ q, repo, sort: "created", order: "desc" }, (error: any, result: any) => {
+            this.octokit.search.issues({ q, repo, sort: "created", order: "desc" }, async (error: any, result: any) => {
                 if (error) {
                     reject("Unknown error was occured while searching the Pull Request.");
                     return;
@@ -34,13 +34,33 @@ export class GithubClient {
 
                 let items = result.data.items;
                 if (items.length === 0) {
-                    reject(`Could not find Pull Request. Sha: ${sha}`);
+                    const errorMessage = `Could not find Pull Request. Sha: ${sha}`;
+                    // this is not good
+                    const parentRepo = await this.getParentRepositoryName(repo).catch((error) => {
+                        reject(errorMessage);
+                        return;
+                    });
+                    resolve(this.getPullRequestUrl(sha, <string>parentRepo));
                     return;
                 }
 
                 const pr = items[items.length - 1];
                 const url = pr.pull_request.html_url;
                 resolve(url);
+            });
+        });
+    }
+
+    private async getParentRepositoryName(fullRepo: string) {
+        const [owner, repo] = fullRepo.split("/");
+        return new Promise((resolve, reject) => {
+            this.octokit.repos.get({ owner, repo }, (error: any, result: any) => {
+                if (error || !result.data.parent) {
+                    reject(error);
+                    return;
+                }
+
+                resolve(result.data.parent.full_name);
             });
         });
     }
