@@ -2,7 +2,7 @@
     "name": "vscode-tosa",
     "displayName": "VS Code TOSA",
     "description": "Open pull request page from line you selected.",
-    "version": "0.0.4",
+    "version": "1.0.0",
     "publisher": "kyoshidajp",
     "author": {
         "name": "Katsuhiko YOSHIDA"
