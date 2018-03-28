@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.0
+
+### Added
+- Add logo icon
+- Get PR from a forked repository
+- Enable to access public repository without Github API Token
+
 ## 0.0.4
 
 ### Added
