@@ -14,7 +14,7 @@ suite("GithubClient Tests", () => {
         assert.ok(new GithubClient());
 
         stub.onCall(tokenIndex++).returns("");
-        assert.throws(() => { return new GithubClient(); }, Error);
+        assert.ok(new GithubClient());
     });
 
     test("getFullRepositoryName", () => {
