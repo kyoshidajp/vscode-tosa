@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.1
+
+### Changed
+- Update icon
+
+### Added
+
 ## 1.0.0
 
 ### Added
