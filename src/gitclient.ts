@@ -25,7 +25,7 @@ export class GitClient {
         return new Promise((resolve, reject) => {
             child_process.execFile(this.gitCommand, args, gitExecOptions, (error, stdout, stderror) => {
                 if (error !== null) {
-                    reject(stderror.toString() || error.message);
+                    reject(new Error(stderror.toString() || error.message));
                     return;
                 }
 
@@ -47,18 +47,18 @@ export class GitClient {
         return new Promise((resolve, reject) => {
             child_process.execFile(this.gitCommand, args, gitExecOptions, (error, stdout, stderror) => {
                 if (error !== null) {
-                    reject(stderror.toString() || error.message);
+                    reject(new Error(stderror.toString() || error.message));
                     return;
                 }
 
                 let sha = stdout.split(" ")[0];
                 if (sha === "") {
-                    reject(`Invalid sha. Sha: ${sha}`);
+                    reject(new Error(`Invalid sha. Sha: ${sha}`));
                     return;
                 }
 
                 if (sha === SHA_NOT_COMMIT) {
-                    reject("This line is not committed yet.");
+                    reject(new Error("This line is not committed yet."));
                     return;
                 }
 
