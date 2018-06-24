@@ -1,11 +1,22 @@
 # Change Log
 
+## 1.1.0
+
+### Changed
+
+- Change StatusBarItem placement priority to high
+
+### Fixed
+- Fix an error message is't shown problem
+- Fix could not get SSH protocol url
+
+### Added
+- Update package
+
 ## 1.0.1
 
 ### Changed
 - Update icon
-
-### Added
 
 ## 1.0.0
 
