@@ -10,15 +10,10 @@ export class GithubClient {
         this.initializeOctokit();
     }
 
-    static getFullRepositoryName(path: string) {
-        const gitProtocolRepo = path.match(/^git@github\.com:(.+)\.git/);
-        if (gitProtocolRepo) {
-            return gitProtocolRepo[1];
-        }
-
-        const httpsProtocolRepo = path.match(/^https:\/\/github\.com\/(.+)\.git/);
-        if (httpsProtocolRepo) {
-            return httpsProtocolRepo[1];
+    static getFullRepositoryName(url: string) {
+        const parsedUrl = url.match(/.+github\.com[\/:](.+)\.git/);
+        if (parsedUrl) {
+            return parsedUrl[1];
         }
 
         throw new Error("Could not get repository name.");

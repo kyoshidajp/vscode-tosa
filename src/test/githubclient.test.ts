@@ -30,6 +30,9 @@ suite("GithubClient Tests", () => {
         assert.equal(
             GithubClient.getFullRepositoryName("git@github.com:kyoshidajp/vscode-tosa.gitaaa"),
             "kyoshidajp/vscode-tosa");
+        assert.equal(
+            GithubClient.getFullRepositoryName("ssh://git@github.com:kyoshidajp/vscode-tosa.git"),
+            "kyoshidajp/vscode-tosa");
     });
 
     test("getPullRequestUrl", async () => {
