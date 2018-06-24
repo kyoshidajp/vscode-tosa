@@ -9,7 +9,7 @@ import { CONFIG_NAME } from './constants';
 
 export class Tosa {
 
-    private statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    private statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 100);
     private spinner = require('elegant-spinner')();
     private interval: any;
 
