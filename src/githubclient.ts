@@ -37,7 +37,7 @@ export class GithubClient {
                     const errorMessage = `Could not find Pull Request. Sha: ${sha}`;
                     // this is not good
                     const parentRepo = await this.getParentRepositoryName(repo).catch((error) => {
-                        reject(errorMessage);
+                        reject(new Error(errorMessage));
                         return;
                     });
                     resolve(this.getPullRequestUrl(sha, <string>parentRepo));

@@ -42,17 +42,17 @@ export class Tosa {
         const gitclient = new GitClient(fileName, currentLine, currentDirectory);
 
         const repositoryName = await gitclient.getRepositoryName().catch((error) => {
-            this.showError(error);
+            this.showError(error.message);
             throw new Error();
         });
         const hash = await gitclient.getCommitHash().catch(error => {
-            this.showError(error);
+            this.showError(error.message);
             throw new Error();
         });
 
         const githubclient = new GithubClient();
         return <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
-            this.showError(error);
+            this.showError(error.message);
             throw new Error();
         });
     }
