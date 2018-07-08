@@ -15,7 +15,10 @@ export class Tosa {
 
     public async exec() {
         this.setSendingProgressStatusText();
-        const url = <string> await this.getPullRequestUrl();
+        const url = <string> await this.getPullRequestUrl().catch(error => {
+            this.showError(error.message);
+            throw error;
+        });
         this.openPullRequest(url);
         this.clearSendProgressStatusText();
     }
@@ -27,13 +30,12 @@ export class Tosa {
         const editor = window.activeTextEditor;
         if (!editor) {
             this.statusBarItem.hide();
-            throw new Error();
+            throw new Error("Could not get a activeTextEditor.");
         }
 
         const doc = editor.document;
         if (doc.isDirty) {
-            this.showError("You must save document before opening Pull Request.");
-            throw new Error();
+            throw new Error("You must save document before opening Pull Request.");
         }
 
         const fileName = path.basename(doc.fileName);
@@ -42,18 +44,15 @@ export class Tosa {
         const gitclient = new GitClient(fileName, currentLine, currentDirectory);
 
         const repositoryName = await gitclient.getRepositoryName().catch((error) => {
-            this.showError(error.message);
-            throw new Error();
+            throw error;
         });
         const hash = await gitclient.getCommitHash().catch(error => {
-            this.showError(error.message);
-            throw new Error();
+            throw error;
         });
 
         const githubclient = new GithubClient();
         return <string> await githubclient.getPullRequestUrl(hash.toString(), repositoryName.toString()).catch(error => {
-            this.showError(error.message);
-            throw new Error();
+            throw error;
         });
     }
 
