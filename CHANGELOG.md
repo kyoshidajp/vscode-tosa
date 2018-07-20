@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.1
+
+### Changed
+
+- Change error messages
+
 ## 1.1.0
 
 ### Changed
